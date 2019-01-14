@@ -23,6 +23,29 @@ namespace AWCommonUtil
         /// <param name="data"></param>
         /// <param name="method"></param>
         /// <param name="type"></param>
+        /// <param name="timeOut"></param>
+        /// <returns></returns>
+        public static string Execute(string url, object data, HttpMethod method, HttpContentType type, int timeOut)
+        {
+            switch (method)
+            {
+                case HttpMethod.GET:
+                    return ExecuteRequest(url + "?" + ParamGeneratorFactory.GetParamGenerator(HttpContentType.FormData).GetParamString(data), type, null, method, timeOut);
+                case HttpMethod.POST:
+                case HttpMethod.DELETE:
+                case HttpMethod.PUT:
+                    return ExecuteRequest(url, type, data, method, timeOut);
+                default:
+                    throw new Exception("No such http method");
+            }
+        }
+        /// <summary>
+        /// execute the http request
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
+        /// <param name="method"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public static string Execute(string url, object data, HttpMethod method, HttpContentType type)
         {
@@ -90,13 +113,14 @@ namespace AWCommonUtil
             }
         }
 
-        private static string ExecuteRequest(string url, HttpContentType type, object data, HttpMethod method)
+        private static string ExecuteRequest(string url, HttpContentType type, object data, HttpMethod method, int timeOut = 60)
         {
             try
             {
                 HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(url);
                 req.ContentType = type.ToString();
                 req.Method = method.ToString();
+                req.Timeout = timeOut;
                 if (method != HttpMethod.GET)
                 {
                     string strData = string.Empty;

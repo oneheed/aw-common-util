@@ -113,7 +113,7 @@ namespace AWCommonUtil
             }
         }
 
-        private static string ExecuteRequest(string url, HttpContentType type, object data, HttpMethod method, int timeOut = 60)
+        private static string ExecuteRequest(string url, HttpContentType type, object data, HttpMethod method, int timeOut = 100000)
         {
             try
             {
